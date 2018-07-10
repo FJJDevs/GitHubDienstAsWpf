@@ -10,7 +10,9 @@ namespace GitHubManagement
     {
         static void Main(string[] args)
         {
-
+            GitHubClass gitClass = new GitHubClass();
+            gitClass.GetHtmlCodeForClubReposis();
+            Console.ReadLine();
         }
     }
 }
