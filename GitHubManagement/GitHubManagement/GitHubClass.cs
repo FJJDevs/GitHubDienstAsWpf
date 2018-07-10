@@ -10,7 +10,17 @@ namespace GitHubManagement
 {
     class GitHubClass
     {
-        public void GetHtmlCodeForClubReposis()
+        private List<RepositoryInfo> repoInfoList;
+
+        public GitHubClass()
+        {
+            repoInfoList = new List<RepositoryInfo>();
+        }
+        public List<RepositoryInfo> GetRepoInfoList()
+        {
+            return this.repoInfoList;
+        }
+        public void SetUpRepoListWithInfo()
         {
             using (WebClient client = new WebClient())
             {
@@ -31,8 +41,14 @@ namespace GitHubManagement
                     addedIndex = 19;
                     string subString = result.Substring(index);
                     result = result.Substring(index + addedIndex);
-                    GetNameOfSubStringOfReposetory(subString);
-                    GetDescriptionOfReposetory(subString);
+
+
+                    RepositoryInfo repoInfoObj = new RepositoryInfo();
+                    repoInfoObj.nameOfRepository = GetNameOfSubStringOfReposetory(subString);
+                    repoInfoObj.description = GetDescriptionOfReposetory(subString);
+                    repoInfoObj.linkFromReposetory = "https://github.com/FJJDevs/" + repoInfoObj.nameOfRepository;
+
+                    repoInfoList.Add(repoInfoObj);
                 }
             }
         }
