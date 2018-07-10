@@ -6,11 +6,7 @@ using System.Threading.Tasks;
 
 namespace GitHubManagement
 {
-    class Program
+    public class DataBase
     {
-        static void Main(string[] args)
-        {
-
-        }
     }
 }
