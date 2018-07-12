@@ -13,10 +13,5 @@ namespace GitHubManagement
         public string linkFromReposetory;
         public List<CommitInfo> commits;
         public List<string> dataLinks;
-
-        public RepositoryInfo()      //Erstellungsdatum (Projekt besitzt Datein die man vlt noch darstellen möchte ...) string _name, string _description, string _link
-        {
-
-        }
     }
 }

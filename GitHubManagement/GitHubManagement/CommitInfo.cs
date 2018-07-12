@@ -12,10 +12,5 @@ namespace GitHubManagement
         public string date;
         public string autor;
         public string description;
-
-        public CommitInfo()
-        {
-
-        }
     }
 }
