@@ -11,12 +11,12 @@ namespace GitHubManagement
     {
         private static string pathLogData = null;
 
-        public static void LogMessage(string message)
+        public static void LogMessage(string exceptionMessage, string methodenName, string message)
         {
             pathLogData = Environment.CurrentDirectory + "Log.txt";
 
             StreamWriter writer = new StreamWriter(pathLogData, append: true);
-            writer.Write(DateTime.Now.ToString("dd:MM:yyyy") + "    " + message + "\r\n");
+            writer.Write(DateTime.Now.ToString("dd:MM:yyyy") + "    " + methodenName + "Message: "  + message + "\n" + "Exception :   " + exceptionMessage + "\r\n");
 
             writer.Close();
         }

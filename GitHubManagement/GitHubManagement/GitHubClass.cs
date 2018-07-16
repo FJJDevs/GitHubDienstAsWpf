@@ -22,10 +22,8 @@ namespace GitHubManagement
         }
         public List<CommitInfo> SetUpCommitListWithInfo(string repoUrl, string repoName)
         {
-
             string commitUrl = repoUrl + "/commits/master";
             string webString = GetWebStringFromWebSite(commitUrl);           //Wird jedes mal nach einem Commit neu gesetzt
-            Logger.LogMessage("Informationmessage: Start getting Commitinfos out of Repo = " + repoName);
             List<CommitInfo> commits = new List<CommitInfo>();
             while (true)
             {
@@ -93,7 +91,7 @@ namespace GitHubManagement
                 }
                 catch (Exception e)
                 {
-                    Logger.LogMessage("Errormessage: Methode: GetWebStringFromWebSite. Fehler: Hat versucht die Url zu ereichen (fehlgeschlagen): " + url + "\n Exceptionmessage: " + e);
+                    Logger.LogMessage(e.ToString(), "GetWebStringFromWebSite", "Fehler: Hat versucht die Url zu ereichen(fehlgeschlagen): " + url);
                     Environment.Exit(0);
                     return null;
                 }
