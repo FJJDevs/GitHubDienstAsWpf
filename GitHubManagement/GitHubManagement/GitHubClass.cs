@@ -10,7 +10,7 @@ namespace GitHubManagement
 {
     class GitHubClass
     {
-        private List<RepositoryInfo> repoInfoList;
+        private List<RepositoryInfo> repoInfoList = new List<RepositoryInfo>();
 
         public GitHubClass()
         {
@@ -97,14 +97,14 @@ namespace GitHubManagement
                 }
             }
         }
-        public void SetUpRepoListWithInfo()
+        public List<RepositoryInfo> SetUpRepoListWithInfo()
         {
             string webString = GetWebStringFromWebSite("https://github.com/FJJDevs");
             while (true)
             {
                 var index = webString.IndexOf("d-inline-block mb-1");
                 if (index == -1)                //Findet kein Repo mehr im string
-                    return;
+                    return repoInfoList;
                 string subString = webString.Substring(index);
                 webString = webString.Substring(index + 19);
 

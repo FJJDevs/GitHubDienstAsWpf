@@ -4,34 +4,62 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Data.SqlClient;
+using MySql.Data.MySqlClient;
 
 namespace GitHubManagement
 {
     public class DataBase
     {
-        private SqlConnection myConnection = new SqlConnection(@"Server=PCName\SQLServername,1434;Initial Catalog=Datenbankname;User ID=Username;Password=Passwort; Connection Timeout=3");
-        private SqlCommand command;
+        MySqlConnectionStringBuilder conn_string = new MySqlConnectionStringBuilder();
+     
+       
+        public DataBase()
+        {
 
+        }
         public DataBase(List<RepositoryInfo> listGitHubRepoInfos)
         {
 
         }
-        public void AddNewGitHubEntrysToDB()
+        public static MySqlConnection GetDbConnetion()
         {
+            string connectionString = "SERVER=127.0.0.1;" +
+                                      "DATABASE= gitdb;" +
+                                      "UID = root";
+            MySqlConnection connection = new MySqlConnection(connectionString);
+
+            return connection;
+
+        }
+        public void AddNewGitHubEntrysToDB(RepositoryInfo repoInfo)
+        {
+            MySqlConnection connection = new MySqlConnection();
             try
             {
-                myConnection.Open();
-                //Execute command
+               connection = GetDbConnetion();
+               connection.Open();
             }
             catch(Exception e)
             {
                 Logger.LogMessage(e.ToString(),"AddNewGitHubEntrysToDB", "Fehler beim Hinzufügen von neuen Datensätzen in die DB / Oder keine Verbindung  zur DB");
                 Console.WriteLine(e);
             }
-            //Bevor das gemacht werden kann muss überprüft werden welche Unterschiedlich sind (GitHubInfos und DBInfos)
-            //Vlt auch gucken ob sich was geändert hat oder einfach etwas neues hinzugefügt wurde
+            try
+            {
+               
+                 MySqlCommand command = connection.CreateCommand();
+                 command.CommandText = "INSERT INTO `repositories`(`RepoName`, `RepoDescription`, `RepoLink`) VALUES('"+repoInfo.nameOfRepository+"', '"+repoInfo.description+"', '"+repoInfo.linkFromReposetory+"')";
+                ;
+                command.ExecuteNonQuery();
+                }
+                catch(Exception e)
+                {
+                    Console.WriteLine(e);
+                }
+                //Bevor das gemacht werden kann muss überprüft werden welche Unterschiedlich sind (GitHubInfos und DBInfos)
+                //Vlt auch gucken ob sich was geändert hat oder einfach etwas neues hinzugefügt wurde
 
-        }
+            }
         public void CheckForNewGitHubEntrys()
         {
             try
