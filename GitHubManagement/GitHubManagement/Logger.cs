@@ -13,6 +13,7 @@ namespace GitHubManagement
 
         public static void LogMessage(string exceptionMessage, string methodenName, string message)
         {
+            //Test
             pathLogData = Environment.CurrentDirectory + "Log.txt";
 
             StreamWriter writer = new StreamWriter(pathLogData, append: true);
