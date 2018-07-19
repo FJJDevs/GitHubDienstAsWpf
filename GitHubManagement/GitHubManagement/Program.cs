@@ -12,11 +12,6 @@ namespace GitHubManagement
         {
             GitHubClass gitClass = new GitHubClass();
             var list = gitClass.SetUpRepoListWithInfo();
-            DataBase database = new DataBase();
-            foreach (var item in list)
-            {
-                database.AddNewGitHubEntrysToDB(item);
-            }
             Console.ReadLine();
         }
     }

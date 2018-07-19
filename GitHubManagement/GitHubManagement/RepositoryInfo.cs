@@ -11,6 +11,7 @@ namespace GitHubManagement
         public string nameOfRepository;
         public string description;
         public string linkFromReposetory;
+        public string repoID;
         public List<CommitInfo> commits;
         public List<string> dataLinks;
     }

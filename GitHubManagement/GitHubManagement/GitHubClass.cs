@@ -38,7 +38,14 @@ namespace GitHubManagement
                 commitInfo.description = nameAndDescription[1];
                 commitInfo.date = GetDateTimeOfCommit(subString);
                 commitInfo.autor = GetAutorOfCommit(subString);
+                commitInfo.commitID = GetIDOfCommit(subString);
             }
+        }
+        private string GetIDOfCommit(string subString)
+        {
+            int indexOfIDInSubString = subString.IndexOf("clipboard-copy value=");
+            string subStringID = subString.Substring(indexOfIDInSubString + 24);
+            return subStringID.Split('"')[0];
         }
         private string GetAutorOfCommit(string subString)
         {
@@ -113,9 +120,18 @@ namespace GitHubManagement
                 repoInfoObj.description = GetDescriptionOfReposetory(subString);
                 repoInfoObj.linkFromReposetory = "https://github.com/FJJDevs/" + repoInfoObj.nameOfRepository;
                 repoInfoObj.commits = SetUpCommitListWithInfo(repoInfoObj.linkFromReposetory, repoInfoObj.nameOfRepository);
+                repoInfoObj.repoID = GetIDFromRepository(repoInfoObj.linkFromReposetory);
+                Console.WriteLine(repoInfoObj.repoID);
                 Console.WriteLine("\n");
                 repoInfoList.Add(repoInfoObj);
             }
+        }
+        private string GetIDFromRepository(string url)
+        {
+            string webString = GetWebStringFromWebSite(url);
+            int indexOfIDString = webString.IndexOf("data-scope-id=");
+            string subStringID = webString.Substring(indexOfIDString + 15);
+            return subStringID.Split('"')[0];
         }
         private string GetNameOfSubStringOfReposetory(string subString)
         {
