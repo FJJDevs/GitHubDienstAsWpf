@@ -16,10 +16,7 @@ namespace GitHubManagement
         {
             repoInfoList = new List<RepositoryInfo>();
         }
-        public List<RepositoryInfo> GetRepoInfoList()
-        {
-            return this.repoInfoList;
-        }
+        #region Commit
         public List<CommitInfo> SetUpCommitListWithInfo(string repoUrl, string repoName)
         {
             string commitUrl = repoUrl + "/commits/master";
@@ -78,6 +75,7 @@ namespace GitHubManagement
             Console.WriteLine("description: " + descriptionOfCommit);
             return new string[] { nameOfCommit, descriptionOfCommit };
         }
+        #endregion
         private string GetWebStringFromWebSite(string url)
         {
             using (WebClient client = new WebClient())
@@ -104,6 +102,7 @@ namespace GitHubManagement
                 }
             }
         }
+        #region Repository
         public List<RepositoryInfo> SetUpRepoListWithInfo()
         {
             string webString = GetWebStringFromWebSite("https://github.com/FJJDevs");
@@ -125,6 +124,10 @@ namespace GitHubManagement
                 Console.WriteLine("\n");
                 repoInfoList.Add(repoInfoObj);
             }
+        }
+        public List<RepositoryInfo> GetRepoInfoList()
+        {
+            return this.repoInfoList;
         }
         private string GetIDFromRepository(string url)
         {
@@ -150,5 +153,6 @@ namespace GitHubManagement
             Console.WriteLine(descriptionsubString.Substring(0, descriptionsubString.Length - 1));
             return descriptionsubString.Substring(0, descriptionsubString.Length - 1);
         }
+        #endregion
     }
 }
