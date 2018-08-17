@@ -13,5 +13,7 @@ namespace GitHubManagement
         public string autor;
         public string description;
         public string commitID;
+        public string repoID;
+        public bool isInDatabase;
     }
 }

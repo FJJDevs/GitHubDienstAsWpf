@@ -14,5 +14,16 @@ namespace GitHubManagement
         public string repoID;
         public List<CommitInfo> commits;
         public List<string> dataLinks;
+        public bool existsInDataBase = false;
+    }
+    public class RepositoryInfoForDataBase
+    {
+        public string nameOfRepository;
+        public string description;
+        public string linkFromReposetory;
+        public string repoID;
+        public List<CommitInfo> commits;
+        public List<string> dataLinks;
+        public bool existsInGitHub = false;
     }
 }

@@ -10,6 +10,7 @@ namespace GitHubManagement
 {
     class GitHubClass
     {
+        private int commitCounter = 0;
         private List<RepositoryInfo> repoInfoList = new List<RepositoryInfo>();
 
         public GitHubClass()
@@ -17,7 +18,7 @@ namespace GitHubManagement
             repoInfoList = new List<RepositoryInfo>();
         }
         #region Commit
-        public List<CommitInfo> SetUpCommitListWithInfo(string repoUrl, string repoName)
+        public List<CommitInfo> SetUpCommitListWithInfo(string repoUrl, string repoName, string repoID)
         {
             string commitUrl = repoUrl + "/commits/master";
             string webString = GetWebStringFromWebSite(commitUrl);           //Wird jedes mal nach einem Commit neu gesetzt
@@ -35,7 +36,10 @@ namespace GitHubManagement
                 commitInfo.description = nameAndDescription[1];
                 commitInfo.date = GetDateTimeOfCommit(subString);
                 commitInfo.autor = GetAutorOfCommit(subString);
-                commitInfo.commitID = GetIDOfCommit(subString);
+                commitInfo.commitID = commitCounter.ToString();
+                commitInfo.repoID = repoID;
+                commits.Add(commitInfo);
+                commitCounter++;
             }
         }
         private string GetIDOfCommit(string subString)
@@ -54,7 +58,7 @@ namespace GitHubManagement
         {
             string subStringDateTime = subString.Substring(subString.IndexOf("datetime") + 10, 20);
             Console.WriteLine(subStringDateTime);
-            return null;
+            return subStringDateTime.Substring(0, 10); 
         }
         private string[] GetNameAndDescriptionOfCommit(string subString)        //0 Im Array ist der Tittel und 1 die Description
         {
@@ -118,8 +122,8 @@ namespace GitHubManagement
                 repoInfoObj.nameOfRepository = GetNameOfSubStringOfReposetory(subString);
                 repoInfoObj.description = GetDescriptionOfReposetory(subString);
                 repoInfoObj.linkFromReposetory = "https://github.com/FJJDevs/" + repoInfoObj.nameOfRepository;
-                repoInfoObj.commits = SetUpCommitListWithInfo(repoInfoObj.linkFromReposetory, repoInfoObj.nameOfRepository);
                 repoInfoObj.repoID = GetIDFromRepository(repoInfoObj.linkFromReposetory);
+                repoInfoObj.commits = SetUpCommitListWithInfo(repoInfoObj.linkFromReposetory, repoInfoObj.nameOfRepository, repoInfoObj.repoID);
                 Console.WriteLine(repoInfoObj.repoID);
                 Console.WriteLine("\n");
                 repoInfoList.Add(repoInfoObj);
