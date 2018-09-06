@@ -10,7 +10,7 @@ namespace GitHubManagement
     {
         static void Main(string[] args)
         {
-            GitHubClass gitClass = new GitHubClass();
+            GitHub gitClass = new GitHub();
             var list = gitClass.SetUpRepoListWithInfo();
             DataBase dataBaseObj = new DataBase(list);
             dataBaseObj.FillRepoDataBaseList();

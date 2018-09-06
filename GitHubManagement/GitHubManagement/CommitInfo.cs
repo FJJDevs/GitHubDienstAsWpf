@@ -8,12 +8,12 @@ namespace GitHubManagement
 {
     public class CommitInfo
     {
-        public string titel;
-        public string date;
-        public string autor;
-        public string description;
-        public string commitID;
-        public string repoID;
-        public bool isInDatabase;
+        public string Title { get; set; }
+        public string Date { get; set; }
+        public string Author { get; set; }
+        public string Description { get; set; }
+        public string CommitId { get; set; }
+        public string RepoId { get; set; }
+        public bool IsInDatabase { get; set; }
     }
 }

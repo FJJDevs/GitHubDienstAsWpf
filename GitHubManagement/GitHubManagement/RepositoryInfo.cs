@@ -8,22 +8,23 @@ namespace GitHubManagement
 {
     public class RepositoryInfo
     {
-        public string nameOfRepository;
-        public string description;
-        public string linkFromReposetory;
-        public string repoID;
-        public List<CommitInfo> commits;
-        public List<string> dataLinks;
-        public bool existsInDataBase = false;
+        public string NameOfRepository { get; set; }
+        public string Description { get; set; }
+        public string LinkFromReposetory { get; set; }
+        public string RepoID { get; set; }
+        public List<CommitInfo> Commits { get; set; }
+        public List<string> DataLinks { get; set; }
+        public bool ExistsInDataBase { get; set; } = false;
     }
+
     public class RepositoryInfoForDataBase
     {
-        public string nameOfRepository;
-        public string description;
-        public string linkFromReposetory;
-        public string repoID;
-        public List<CommitInfo> commits;
-        public List<string> dataLinks;
-        public bool existsInGitHub = false;
+        public string NameOfRepository { get; set; }
+        public string Description { get; set; }
+        public string LinkFromReposetory { get; set; }
+        public string RepoID { get; set; }
+        public List<CommitInfo> Commits { get; set; }
+        public List<string> DataLinks { get; set; }
+        public bool ExistsInGitHub { get; set; } = false;
     }
 }

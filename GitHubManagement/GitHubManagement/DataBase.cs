@@ -12,33 +12,39 @@ namespace GitHubManagement
     {
         private List<RepositoryInfoForDataBase> repoDataBaseList;
         private List<RepositoryInfo> repoInfosGitHub;
+        private MySqlConnection connection;
+
         public DataBase(List<RepositoryInfo> gitHubRepoList)
         {
             repoInfosGitHub = gitHubRepoList;
+            connection = GetDbConnetion();
         }
+
         private static MySqlConnection GetDbConnetion()
         {
             string connectionString = "SERVER=127.0.0.1;" +
                                       "DATABASE= gitdb;" +
                                       "UID = root;" +
                                       "SslMode=none;";
+
             MySqlConnection connection = new MySqlConnection(connectionString);
 
             return connection;
         }
+
         /// <summary>
         /// Fügt die neuen GitHubEinträge (Repository) zu der Datenbank hinzu
         /// </summary>
         /// <param name="repoInfo"></param>
         public void AddNewRepoGitHubEntryToDB(RepositoryInfo repoInfo)
         {
-            MySqlConnection connection = new MySqlConnection();
             try
             {
-                connection = GetDbConnetion();
                 connection.Open();
                 MySqlCommand command = connection.CreateCommand();
-                command.CommandText = "INSERT INTO `repositories` (`RepoName`, `RepoDescription`, `RepoLink`, `RepoID`) VALUES('" + repoInfo.nameOfRepository + "', '" + repoInfo.description + "', '" + repoInfo.linkFromReposetory + "', '" + repoInfo.repoID + "')";
+                command.CommandText = "INSERT INTO `repositories` (`RepoName`, `RepoDescription`, `RepoLink`, `RepoID`) " +
+                    "                   VALUES('" + repoInfo.NameOfRepository + "', '" + repoInfo.Description + "', '" +
+                                        repoInfo.LinkFromReposetory + "', '" + repoInfo.RepoID + "')";
                 command.ExecuteNonQuery();
                 connection.Close();
             }
@@ -52,18 +58,15 @@ namespace GitHubManagement
             //Vlt auch gucken ob sich was geändert hat oder einfach etwas neues hinzugefügt wurde
         }
 
-
         public void RemoveOldRepository(RepositoryInfoForDataBase repInfo)
         {
-            MySqlConnection connection = new MySqlConnection();
             try
             {
-                                connection = GetDbConnetion();
                 connection.Open();
                 MySqlCommand command = connection.CreateCommand();
-                command.CommandText = "DELETE  FROM `commits` WHERE RepoID = '" + repInfo.repoID + "'";
+                command.CommandText = "DELETE  FROM `commits` WHERE RepoID = '" + repInfo.RepoID + "'";
                 command.ExecuteNonQuery();
-                command.CommandText = "DELETE  FROM `repositories` WHERE RepoID = '" + repInfo.repoID + "'";
+                command.CommandText = "DELETE  FROM `repositories` WHERE RepoID = '" + repInfo.RepoID + "'";
                 command.ExecuteNonQuery();
                 connection.Close();
             }
@@ -74,35 +77,36 @@ namespace GitHubManagement
                 connection.Close();
             }
         }
+
         public void AddNewCommitGitHubEntryToDB(CommitInfo commit)
         {
-            MySqlConnection connection = new MySqlConnection();
             try
             {
-                connection = GetDbConnetion();
                 connection.Open();
                 MySqlCommand command = connection.CreateCommand();
-                command.CommandText = "INSERT INTO `commits`(`CommitID`,`CommitTitle`, `Date`, `Description`, `RepoID` ) VALUES('" + commit.commitID + "', '" + commit.titel + "', '" + commit.date + "', '" + commit.description + "', '" + commit.repoID + "')";
+                command.CommandText = "INSERT INTO `commits`(`CommitID`,`CommitTitle`, `Date`, `Description`, `RepoID` ) " +
+                    "                  VALUES('" + commit.CommitId + "', '" + 
+                                       commit.Title + "', '" + 
+                                       commit.Date + "', '" + 
+                                       commit.Description + "', '" + 
+                                       commit.RepoId + "')";
                 command.ExecuteNonQuery();
                 connection.Close();
             }
             catch (Exception e)
             {
-                Logger.LogMessage(e.ToString(), "AddNewCommitGitHubEntryToDB", "keine Verbindung  zur DB möglich");
+                Logger.LogMessage(e.ToString(), "AddNewCommitGitHubEntryToDB", "Keine Verbindung  zur DB möglich");
                 Console.WriteLine(e);
             }
 
         }
         public void FillRepoDataBaseList()
         {
-            MySqlConnection connection = new MySqlConnection();
-
-            //Alle Infos aus der db besorgen 
-            //Ist das Repo neu ?
-            //Hat sich das Repo vberändert / gelöscht
+            // Alle Infos aus der db besorgen 
+            // Ist das Repo neu ?
+            // Hat sich das Repo vberändert / gelöscht
             try
             {
-                connection = GetDbConnetion();
                 connection.Open();
                 MySqlCommand command = connection.CreateCommand();
                 command.CommandText = "SELECT * FROM repositories";
@@ -111,11 +115,11 @@ namespace GitHubManagement
                 while (reader.Read())
                 {
                     RepositoryInfoForDataBase repoInfoObj = new RepositoryInfoForDataBase();
-                    repoInfoObj.repoID = reader.GetValue(0).ToString();
-                    repoInfoObj.nameOfRepository = reader.GetValue(1).ToString();
-                    repoInfoObj.description = reader.GetValue(2).ToString();
-                    repoInfoObj.linkFromReposetory = reader.GetValue(3).ToString();
-                    repoInfoObj.commits = GetCommitsOfRepo(Convert.ToInt32(repoInfoObj.repoID));
+                    repoInfoObj.RepoID = reader.GetValue(0).ToString();
+                    repoInfoObj.NameOfRepository = reader.GetValue(1).ToString();
+                    repoInfoObj.Description = reader.GetValue(2).ToString();
+                    repoInfoObj.LinkFromReposetory = reader.GetValue(3).ToString();
+                    repoInfoObj.Commits = GetCommitsOfRepo(Convert.ToInt32(repoInfoObj.RepoID));
                     repoDataBaseList.Add(repoInfoObj);
                 }
             }
@@ -130,10 +134,8 @@ namespace GitHubManagement
         public List<CommitInfo> GetCommitsOfRepo(int repoID)
         {
             List<CommitInfo> commitInfoList = new List<CommitInfo>();
-            MySqlConnection connection = new MySqlConnection();
             try
             {
-                connection = GetDbConnetion();
                 connection.Open();
                 MySqlCommand command = connection.CreateCommand();
                 command.CommandText = "SELECT * FROM `commits` WHERE RepoID = " + repoID;
@@ -143,11 +145,11 @@ namespace GitHubManagement
                 {
 
                     CommitInfo commitInf = new CommitInfo();
-                    commitInf.commitID = reader.GetValue(0).ToString();
-                    commitInf.titel = reader.GetValue(1).ToString();
-                    commitInf.date = reader.GetValue(2).ToString();
-                    commitInf.description = reader.GetValue(3).ToString();
-                    commitInf.repoID = reader.GetValue(4).ToString();
+                    commitInf.CommitId = reader.GetValue(0).ToString();
+                    commitInf.Title = reader.GetValue(1).ToString();
+                    commitInf.Date = reader.GetValue(2).ToString();
+                    commitInf.Description = reader.GetValue(3).ToString();
+                    commitInf.RepoId = reader.GetValue(4).ToString();
                     commitInfoList.Add(commitInf);
                 }
                 return commitInfoList;
@@ -160,47 +162,47 @@ namespace GitHubManagement
                 return null;
             }
         }
+
         private void CheckIfRepoIsNew()
         {
             foreach (var repo in repoInfosGitHub)
             {
                 foreach (var dataBaseRepoObj in repoDataBaseList)
                 {
-                    if(repo.repoID == dataBaseRepoObj.repoID)
+                    if (repo.RepoID == dataBaseRepoObj.RepoID)
                     {
                         //Check If Something is Changed
-                        dataBaseRepoObj.existsInGitHub = true;
-                        repo.existsInDataBase = true;
+                        dataBaseRepoObj.ExistsInGitHub = true;
+                        repo.ExistsInDataBase = true;
                         CheckForChangesInRepo(repo, dataBaseRepoObj);
-                        CheckForNewCommitGitHubEntrys(repo.commits, dataBaseRepoObj.commits);
+                        CheckForNewCommitGitHubEntrys(repo.Commits, dataBaseRepoObj.Commits);
                     }
                 }
-                if (!repo.existsInDataBase)
+                if (!repo.ExistsInDataBase)
                 {
                     AddNewRepoGitHubEntryToDB(repo);
-                    CheckForNewCommitGitHubEntrys(repo.commits, null);
+                    CheckForNewCommitGitHubEntrys(repo.Commits, null);
                 }
             }
             foreach (var deletRepo in repoDataBaseList)
             {
-                if(deletRepo.existsInGitHub == true)
+                if (deletRepo.ExistsInGitHub == true)
                 {
                     RemoveOldRepository(deletRepo);
                 }
             }
         }
+
         private void CheckForChangesInRepo(RepositoryInfo repo, RepositoryInfoForDataBase repoInfoDataBase)
         {
-          
-            if(repo.description != repoInfoDataBase.description)
+
+            if (repo.Description != repoInfoDataBase.Description)
             {
                 try
                 {
-                    MySqlConnection connection = new MySqlConnection();
-                    connection = GetDbConnetion();
                     connection.Open();
                     MySqlCommand command = connection.CreateCommand();
-                    command.CommandText = "UPDATE  `repositories` SET RepoDescription = '" + repo.description + "' WHERE RepoID = '" + repo.repoID + "'";
+                    command.CommandText = "UPDATE  `repositories` SET RepoDescription = '" + repo.Description + "' WHERE RepoID = '" + repo.RepoID + "'";
                     command.ExecuteNonQuery();
                     connection.Close();
                 }
@@ -214,15 +216,13 @@ namespace GitHubManagement
                 }
 
             }
-            if (repo.linkFromReposetory != repoInfoDataBase.linkFromReposetory)
+            if (repo.LinkFromReposetory != repoInfoDataBase.LinkFromReposetory)
             {
                 try
                 {
-                    MySqlConnection connection = new MySqlConnection();
-                    connection = GetDbConnetion();
                     connection.Open();
                     MySqlCommand command = connection.CreateCommand();
-                    command.CommandText = "UPDATE  `repositories` SET RepoLink = '" + repo.linkFromReposetory + "' WHERE RepoID = '" + repo.repoID + "'";
+                    command.CommandText = "UPDATE  `repositories` SET RepoLink = '" + repo.LinkFromReposetory + "' WHERE RepoID = '" + repo.RepoID + "'";
                     command.ExecuteNonQuery();
                     connection.Close();
                 }
@@ -232,34 +232,34 @@ namespace GitHubManagement
                 {
                     Console.WriteLine(e);
                     Logger.LogMessage(e.ToString(), "CheckForNewCommitGitHubEntrys", "Verbindung zu der DB konnte nicht aufgebaut werden");
-                 
+
                 }
             }
-            
+
         }
+
         public void CheckForNewCommitGitHubEntrys(List<CommitInfo> gitHubCommiListFromSingleRepo, List<CommitInfo> dataBaseCommitListFromSingleRepo)
         {
             try
             {
-                foreach (var gitHubCommit  in gitHubCommiListFromSingleRepo)
+                foreach (var gitHubCommit in gitHubCommiListFromSingleRepo)
                 {
                     if (dataBaseCommitListFromSingleRepo != null)
                     {
                         foreach (var dataBaseCommit in dataBaseCommitListFromSingleRepo)
                         {
-                            if (gitHubCommit.commitID == dataBaseCommit.commitID)
+                            if (gitHubCommit.CommitId == dataBaseCommit.CommitId)
                             {
 
-                                gitHubCommit.isInDatabase = true;
-                                if (gitHubCommit.titel != dataBaseCommit.titel)
+                                gitHubCommit.IsInDatabase = true;
+                                if (gitHubCommit.Title != dataBaseCommit.Title)
                                 {
                                     try
                                     {
-                                        MySqlConnection connection = new MySqlConnection();
-                                        connection = GetDbConnetion();
                                         connection.Open();
                                         MySqlCommand command = connection.CreateCommand();
-                                        command.CommandText = "UPDATE  `commits` SET CommitTitle = '" + gitHubCommit.titel + "' WHERE CommitID = '" + gitHubCommit.commitID + "'";
+                                        command.CommandText = "UPDATE  `commits` SET CommitTitle = '" + gitHubCommit.Title +
+                                                              "' WHERE CommitID = '" + gitHubCommit.CommitId + "'";
                                         command.ExecuteNonQuery();
                                         connection.Close();
                                     }
@@ -268,20 +268,21 @@ namespace GitHubManagement
 
                                     {
                                         Console.WriteLine(e);
-                                        Logger.LogMessage(e.ToString(), "CheckForNewCommitGitHubEntrys", "Verbindung zu der DB konnte nicht aufgebaut werden");
+                                        Logger.LogMessage(e.ToString(),
+                                                         "CheckForNewCommitGitHubEntrys",
+                                                         "Verbindung zu der DB konnte nicht aufgebaut werden");
 
                                     }
                                 }
-                                if (gitHubCommit.description != dataBaseCommit.description)
+                                if (gitHubCommit.Description != dataBaseCommit.Description)
                                 {
                                     try
                                     {
 
-                                        MySqlConnection connection = new MySqlConnection();
-                                        connection = GetDbConnetion();
                                         connection.Open();
                                         MySqlCommand command = connection.CreateCommand();
-                                        command.CommandText = "UPDATE  `commits` SET Description = '" + gitHubCommit.description + "' WHERE CommitID = '" + gitHubCommit.commitID + "'";
+                                        command.CommandText = "UPDATE  `commits` SET Description = '" + gitHubCommit.Description +
+                                                              "' WHERE CommitID = '" + gitHubCommit.CommitId + "'";
                                         command.ExecuteNonQuery();
                                         connection.Close();
                                     }
@@ -290,23 +291,27 @@ namespace GitHubManagement
 
                                     {
                                         Console.WriteLine(e);
-                                        Logger.LogMessage(e.ToString(), "CheckForNewCommitGitHubEntrys", "Verbindung zu der DB konnte nicht aufgebaut werden");
+                                        Logger.LogMessage(e.ToString(),
+                                                         "CheckForNewCommitGitHubEntrys",
+                                                         "Verbindung zu der DB konnte nicht aufgebaut werden");
 
                                     }
                                 }
                             }
                         }
                     }
-                    if (!gitHubCommit.isInDatabase)
+                    if (!gitHubCommit.IsInDatabase)
                         AddNewCommitGitHubEntryToDB(gitHubCommit);
                 }
             }
             catch (Exception e)
             {
-                Logger.LogMessage(e.ToString(), "CheckForNewCommitGitHubEntrys", "Fehler beim herausfinden von neuen Datensätzen (Commits) in der DB");
+                Logger.LogMessage(e.ToString(),
+                                 "CheckForNewCommitGitHubEntrys",
+                                 "Fehler beim herausfinden von neuen Datensätzen (Commits) in der DB");
                 Console.WriteLine(e);
             }
-            //Hier wird gegucktob etwas neues Hinzugefügt wurde oder etwas geändert wurde an den Datensätzen
+            // Hier wird gegucktob etwas neues Hinzugefügt wurde oder etwas geändert wurde an den Datensätzen
         }
     }
 }
