@@ -48,7 +48,7 @@
   <ItemGroup>
     <Compile Include="CommitInfo.cs" />
     <Compile Include="DataBase.cs" />
-    <Compile Include="GitHubClass.cs" />
+    <Compile Include="GitHub.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
