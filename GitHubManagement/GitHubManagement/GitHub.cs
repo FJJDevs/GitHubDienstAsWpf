@@ -74,6 +74,15 @@ namespace GitHubManagement
         private string[] GetNameAndDescriptionOfCommit(string subString)     
         {
             string subNameAndDescWithHTMLInfo = subString.Substring(subString.IndexOf("title=") + 7);
+            string test = "class=" + @"\" +"\"" + "message\"";
+            if(subNameAndDescWithHTMLInfo.IndexOf("class=" + "\\" +"\"" + "message\"") == -1)
+            {
+         
+            }
+            else
+            {
+
+            }
             string subWith = subNameAndDescWithHTMLInfo.Substring(0, subNameAndDescWithHTMLInfo.IndexOf("class=\"message\"") - 2);
             // class="message"
             var splitSubStringDescriptionAndName = subWith.Split(new[] { "\r\n","\r","\n" }, StringSplitOptions.None);

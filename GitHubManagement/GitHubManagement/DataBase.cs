@@ -12,7 +12,14 @@ namespace GitHubManagement
     {
         private List<RepositoryInfoForDataBase> repoDataBaseList;
         private List<RepositoryInfo> repoInfosGitHub;
-        private MySqlConnection connection;
+        private readonly MySqlConnection connection;
+
+
+        private int newCommitCounter = 0;
+        private int newRepoCounter = 0;
+        private int deleteRepoCounter = 0;
+        private int commitChangesCounter = 0;
+        private int repoChangesCounter = 0;
 
         public DataBase(List<RepositoryInfo> gitHubRepoList)
         {
@@ -165,6 +172,9 @@ namespace GitHubManagement
 
         private void CheckIfRepoIsNew()
         {
+            Console.WriteLine("Checking for changes in repos");
+            Console.WriteLine("Checking for new commits");
+            Console.WriteLine("Checking for changes in commits");
             foreach (var repo in repoInfosGitHub)
             {
                 foreach (var dataBaseRepoObj in repoDataBaseList)
@@ -180,6 +190,7 @@ namespace GitHubManagement
                 }
                 if (!repo.ExistsInDataBase)
                 {
+                    newRepoCounter++;
                     AddNewRepoGitHubEntryToDB(repo);
                     CheckForNewCommitGitHubEntrys(repo.Commits, null);
                 }
@@ -191,10 +202,12 @@ namespace GitHubManagement
                     RemoveOldRepository(deletRepo);
                 }
             }
+            Console.WriteLine(repoChangesCounter + " repo changes were made");
         }
 
         private void CheckForChangesInRepo(RepositoryInfo repo, RepositoryInfoForDataBase repoInfoDataBase)
         {
+
 
             if (repo.Description != repoInfoDataBase.Description)
             {
@@ -214,7 +227,7 @@ namespace GitHubManagement
                     Logger.LogMessage(e.ToString(), "CheckForNewCommitGitHubEntrys", "Verbindung zu der DB konnte nicht aufgebaut werden");
 
                 }
-
+                repoChangesCounter++;
             }
             if (repo.LinkFromReposetory != repoInfoDataBase.LinkFromReposetory)
             {
@@ -234,6 +247,7 @@ namespace GitHubManagement
                     Logger.LogMessage(e.ToString(), "CheckForNewCommitGitHubEntrys", "Verbindung zu der DB konnte nicht aufgebaut werden");
 
                 }
+                repoChangesCounter++;
             }
 
         }
@@ -273,6 +287,7 @@ namespace GitHubManagement
                                                          "Verbindung zu der DB konnte nicht aufgebaut werden");
 
                                     }
+                                    commitChangesCounter++;
                                 }
                                 if (gitHubCommit.Description != dataBaseCommit.Description)
                                 {
@@ -296,13 +311,19 @@ namespace GitHubManagement
                                                          "Verbindung zu der DB konnte nicht aufgebaut werden");
 
                                     }
+                                    commitChangesCounter++;
                                 }
                             }
                         }
                     }
                     if (!gitHubCommit.IsInDatabase)
+                    {
+                        newCommitCounter++;
                         AddNewCommitGitHubEntryToDB(gitHubCommit);
+                    }
                 }
+                Console.WriteLine(newCommitCounter + " commits were added to the database.");
+                Console.WriteLine(commitChangesCounter +  " commitchanges were made.");
             }
             catch (Exception e)
             {
